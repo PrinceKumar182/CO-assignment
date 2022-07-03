@@ -23,7 +23,7 @@ def decimalToBinary(dec):
     return string
 
 codes={"add":{"type":1,"code":"10000"},"sub":{"type":1,"code":"10001"},"mul":{"type":1,"code":"10110"},"xor":{"type":1,"code":"11010"},"or":{"type":1,"code":"11011"},"and":{"type":1,"code":"11100"},"mov":{"type":2,"code":"10010"},"rs":{"type":2,"code":"11000"},"ls":{"type":2,"code":"11001"},"mov":{"type":3,"code":"10011"},"div":{"type":3,"code":"10111"},"not":{"type":3,"code":"11101"},"cmp":{"type":3,"code":"11110"},"ld":{"type":4,"code":"10100"},"st":{"type":4,"code":"10101"},"jmp":{"type":5,"code":"11111"},"jlt":{"type":5,"code":"01100"},"jgt":{"type":5,"code":"01101"},"je":{"type":5,"code":"01111"},"hlt":{"type":6,"code":"01010"},}
-resistors={"R0":"000","R1":"001","R2":"010","R3":"011","R4":"100","R5":"101","R6":"110","FLAGS":"111"}
+registers={"R0":"000","R1":"001","R2":"010","R3":"011","R4":"100","R5":"101","R6":"110","FLAGS":"111"}
 
 filename="test1"
 file=makeFile(filename)
@@ -34,15 +34,15 @@ index=0
 
 while(temp not in codes):
     if(file[index][:5]=="label"):
-        if(file[index] in resistors):
+        if(file[index] in registers):
             print(f"variable already declared and cannot be used as label name in line {index/2 +1}")
             temp="hlt"
             f=open(output,"w").close()
-        resistors[file[index]]=file[index]
+        registers[file[index]]=file[index]
         index+=1
         temp=file[index]
         break
-    resistors[temp]=file[index+1]
+   registers[temp]=file[index+1]
     if(temp!="var"):
         print(f"Undefined variable at line {(index/2)+1}")
         temp="hlt"
@@ -68,11 +68,11 @@ while(index<len(file)):
         break
 
     if(file[index][:5]=="label"):
-        if(file[index] in resistors):
+        if(file[index] in registers):
             print(f"variable already declared and cannot be used as label name in line {index/2 +1}")
             break
             f=open(output,"w").close()
-        resistors[file[index]]=file[index]
+        registers[file[index]]=file[index]
         index+=1
         temp=file[index]
         continue
@@ -96,7 +96,7 @@ while(index<len(file)):
     if(typev==1):
         out+="00"
         try:
-            out+=resistors[file[index]]+resistors[file[index+1]]+resistors[file[index+2]]
+            out+=registers[file[index]]+registers[file[index+1]]+registers[file[index+2]]
         except:
             print(f"invalid inputs for the command at line {line}")
             break
@@ -106,7 +106,7 @@ while(index<len(file)):
 
     elif(typev==2):
         try:
-            out+=resistors[file[index]]
+            out+=registers[file[index]]
             index+=1
             out+=decimalToBinary(int(file[index][1:]))
         except:
@@ -123,7 +123,7 @@ while(index<len(file)):
     elif(typev==3):
         try:
             out+="00000"
-            out+=resistors[file[index]]+resistors[file[index+1]]
+            out+=registers[file[index]]+registers[file[index+1]]
         except:
             print(f"invalid inputs for the command at line {line}")
             break
@@ -131,10 +131,10 @@ while(index<len(file)):
         line+=1
     elif(typev==4):
         try:
-            out+=resistors[file[index]]
+            out+=registers[file[index]]
             index+=1
-            if(file[index] in resistors):
-                out+=resistors[file[index]]
+            if(file[index] in registers):
+                out+=registers[file[index]]
             else:
                 if(len(file[index])==8):
                     out+=file[index]
